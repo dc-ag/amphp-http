@@ -101,6 +101,7 @@ final class Http2Parser
         int $streamId,
         int $frameLength
     ): bool {
+        /** @psalm-suppress RiskyTruthyFalsyComparison */
         $env = \getenv("AMP_DEBUG_HTTP2_FRAMES") ?: "0";
         if (match ($env) {
             "0", "false", "off" => false,

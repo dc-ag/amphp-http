@@ -332,6 +332,7 @@ final class CookieAttributes implements \Stringable
             $string .= '; Expires=' . \gmdate('D, j M Y G:i:s T', $this->expiry->getTimestamp());
         }
 
+        /** @psalm-suppress RiskyTruthyFalsyComparison */
         if ($this->maxAge) {
             $string .= '; Max-Age=' . $this->maxAge;
         }
