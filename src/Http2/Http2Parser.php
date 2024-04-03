@@ -407,6 +407,15 @@ final class Http2Parser
 
         $this->headerStream = $streamId;
         $this->headerBuffer .= $buffer;
+
+        $headersTooLarge = \strlen($this->headerBuffer) > $this->headerSizeLimit;
+
+        if ($headersTooLarge) {
+            throw new Http2ConnectionException(
+                "Headers exceed the maximum configured size of {$this->headerSizeLimit} bytes",
+                self::COMPRESSION_ERROR
+            );
+        }
     }
 
     /** @see https://http2.github.io/http2-spec/#HEADERS */
