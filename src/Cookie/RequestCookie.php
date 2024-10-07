@@ -32,8 +32,9 @@ final class RequestCookie
         $cookies = \explode(";", $string);
         $result = [];
 
-        try {
-            foreach ($cookies as $cookie) {
+
+        foreach ($cookies as $cookie) {
+            try {
                 // Ignore zero-length cookie.
                 if (\trim($cookie) === '') {
                     continue;
@@ -49,9 +50,9 @@ final class RequestCookie
 
                 // We can safely trim quotes, as they're not allowed within cookie values
                 $result[] = new self(\trim($name), \trim($value, " \t\""));
+            } catch (InvalidCookieException $e) {
+                continue;
             }
-        } catch (InvalidCookieException $e) {
-            return [];
         }
 
         return $result;
@@ -69,7 +70,10 @@ final class RequestCookie
             throw new InvalidCookieException("Invalid cookie name: '{$name}'");
         }
 
-        if (!\preg_match('(^[\x21\x23-\x2B\x2D-\x3A\x3C-\x5B\x5D-\x7E]*+$)', $value)) {
+        if (
+            !json_validate($value) &&
+            !\preg_match('(^[\x21\x23-\x2B\x2D-\x3A\x3C-\x5B\x5D-\x7E]*+$)', $value)
+        ) {
             throw new InvalidCookieException("Invalid cookie value: '{$value}'");
         }
 
